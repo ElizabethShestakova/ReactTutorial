@@ -1,26 +1,45 @@
 import React from 'react'
 import { Add } from './components/Add'
 import { News } from './components/News'
-import newsData from './data/newsData'
+
 import './App.css';
-
-
-  
 class App extends React.Component {
   state = {
-      news: newsData,
+      news: null,
+      isLoading: false
   }
+
+  componentDidMount() {
+    this.setState({isLoading: true})
+    fetch('http://localhost:3000/data/newsData.json') 
+      .then(response => {
+        return response.json()
+      }) 
+      .then(data => {
+        // console.log(this)
+        // console.log('приехали данные', this)
+        setTimeout(() => {
+          this.setState({news: data, isLoading: false})
+        }, 3000)
+        })
+
+      
+
+  }
+
   handleAddNews = (data) => {
       // console.log('я вызвана из add но имею доступ к this.state у App!', this.state);
       const nextNews = [data, ...this.state.news]
       this.setState({ news: nextNews})
   }
   render() {
+    const { news, isLoading } = this.state
   return(
       <React.Fragment>
       <Add onAddNews={this.handleAddNews}/>
-      <h3>Новости</h3>        
-          <News data={this.state.news}/>{/*Добавили свойство data*/}            
+      <h3>Новости</h3>    
+        {isLoading && <p>Загружаю...</p>}    
+        {Array.isArray(news) && <News data={news}/>}       
       </React.Fragment>
   )
   }
