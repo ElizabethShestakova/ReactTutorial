@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>React [RU] Tutorial v2</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <style>
+        .red {
+color: #FF0000;
+}
+.none {
+    display: none;
+}
+</style>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+        const myNews = [
+        {
+            id: 1,            
+            author: 'Саша Печкин',
+            text: 'В четверг, четвертого числа...'
+        },
+        {
+            id: 2,
+            author: 'Просто Вася',
+            text: 'Считаю, что $ должен стоить 35 рублей!'
+        },
+        {
+            id: 3,
+            author: 'Max Frontend',
+            text: 'Прошло 2 года с прошлых учебников, а $ так и не стоит 35'
+        },
+        {
+            id: 4,
+            author: 'Гость',
+            text: 'Бесплатно. Без смс, про реакт, заходи - https://maxpfrontend.ru'
+        }
+        ];
+
+class News extends React.Component {
+    render() {
+        const { data } = this.props
+        let newsTemplate
+
+        if (data.length) {//если новости есть, пробегись map-ом
+            newsTemplate = this.props.data.map(function(item, index){
+            return (
+                <div key={item.id}>{/*используем id в качестве ключа*/}
+                    <p className='news__author'>{item.author}:</p>
+                    <p className='news__text'>{item.text}</p>
+                </div>
+            )
+        }) 
+        } else {
+            newsTemplate = <p>К сожалению, новостей нет</p>
+        }
+
+           
+
+            return (
+                <div className='news'>
+                    {newsTemplate}
+                    {
+                        data.length ? <strong>Всего новостей: {data.length}</strong> : null
+                    }
+                    
+                </div>
+            )
+    }    
+}
+
+const Comments = () => {
+    return <p>Нет новостей - комментировать нечего</p>
+}
+
+const App = () => {
+// return <p>Всем привет, я компонент App</p>
+    return(
+        <React.Fragment>
+            <News data={myNews}/>{/*Добавили свойство data*/}
+            <Comments/>
+        </React.Fragment>
+    )
+
+}
+
+// class BigApp extends React.Component {
+// render() {
+// return (
+//     <React.Fragment>
+// <h1>Я компонент, BigApp</h1>
+// <p className='red'>Компоненты можно вкладывать друг в друга.</p>
+// <App/>
+// <News/>
+// </React.Fragment>
+// )
+// }
+// }
+ReactDOM.render(
+<App />,
+document.getElementById('root')
+);
+</script>
+</body>
+
+</html>
