@@ -7,6 +7,8 @@
     <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <script src="https://unpkg.com/prop-types@15.6/prop-types.js"></script>
+
     <style>
         .red {
 color: #FF0000;
@@ -38,6 +40,9 @@ color: rgb(5, 141, 77);
 margin: 10px 0 0 0;
 display: block;
 }
+.test-input {
+    margin: 0 5px 5px 0;
+}
 
 </style>
 </head>
@@ -50,35 +55,62 @@ display: block;
         {
             id: 1,            
             author: 'Саша Печкин',
-            text: 'В четверг, четвертого числа...'
+            text: 'В четверг, четвертого числа...',
+            bigText: 'в четыре с четвертью часа четыре чёрненьких чумазеньких чертёнка чертили чёрными чернилами чертёж.'
         },
         {
             id: 2,
             author: 'Просто Вася',
-            text: 'Считаю, что $ должен стоить 35 рублей!'
+            text: 'Считаю, что $ должен стоить 35 рублей!',
+            bigText: 'А евро 42!'
         },
         {
             id: 3,
             author: 'Max Frontend',
-            text: 'Прошло 2 года с прошлых учебников, а $ так и не стоит 35'
+            text: 'Прошло 2 года с прошлых учебников, а $ так и не стоит 35',
+            bigText: 'А евро опять выше 70.'
         },
         {
             id: 4,
             author: 'Гость',
-            text: 'Бесплатно. Без смс, про реакт, заходи - https://maxpfrontend.ru'
+            text: 'Бесплатно. Без смс, про реакт, заходи - https://maxpfrontend.ru',
+            bigText: 'Еще есть группа VK, telegram и канал на youtube! Вся инфа на сайте, не реклама!'
         }
         ];
 class Article extends React.Component {
+    state = {
+        visible: false
+    }
+    handlerReadMoreClick = (e) => {
+        e.preventDefault();
+        this.setState({visible: true})
+    }
     render() {
-        const { author, text } = this.props.data
+        const { author, text, bigText } = this.props.data
+        const { visible } = this.state
         return (
             <div className='article'>
                 <p className='news__author'>{author}</p>
                 <p className='news__text'>{text}</p>
+                { /*если не visible то показывай*/
+                    !visible && <a onClick={this.handlerReadMoreClick} href='#' className='news__readmore'>Подробнее</a>
+                }
+                {/*если visible то показывай*/
+                    visible && <p className='news__big-text'>{bigText}</p>
+                }
             </div>
         )
     }
 }
+
+Article.propTypes = {
+    data: PropTypes.shape({
+        author: PropTypes.string.isRequired,
+        text: PropTypes.string.isRequired,
+        bigText: PropTypes.string.isRequired
+    })
+}
+
 class News extends React.Component {
 
     renderNews = () => {
@@ -99,6 +131,7 @@ class News extends React.Component {
         const { data } = this.props       
 
             return (
+                <React.Fragment>
                 <div className='news'>
                     {this.renderNews()}
                     {
@@ -106,8 +139,13 @@ class News extends React.Component {
                     }
                     
                 </div>
+                </React.Fragment>
             )
     }    
+}
+
+News.propTypes = {
+    data: PropTypes.array.isRequired
 }
 
 const App = () => {
@@ -115,10 +153,35 @@ const App = () => {
     return(
         <React.Fragment>
         <h3>Новости</h3>
+        <TestInput/>
             <News data={myNews}/>{/*Добавили свойство data*/}            
         </React.Fragment>
     )
 
+}
+
+class TestInput extends React.Component {
+    state = {
+        myValue: ''
+    }
+    onChangeHandler = (e) => {
+        this.setState({myValue: e.currentTarget.value})
+    }
+    onBtnClickHandler = (e) => {
+        alert(this.state.myValue);                
+    }
+    render() {
+        return(
+            <React.Fragment>
+            <input 
+                onChange={this.onChangeHandler} 
+                className='test-input' 
+                value={this.state.myValue} 
+                placeholder='Введите значение'/>
+            <button onClick={this.onBtnClickHandler}>Кнопка</button>
+            </React.Fragment>
+        )
+    }
 }
 
 ReactDOM.render(
