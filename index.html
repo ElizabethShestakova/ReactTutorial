@@ -137,7 +137,8 @@ Article.propTypes = {
     data: PropTypes.shape({
         author: PropTypes.string.isRequired,
         text: PropTypes.string.isRequired,
-        bigText: PropTypes.string.isRequired
+        bigText: PropTypes.string.isRequired,
+        id: PropTypes.number.isRequired
     })
 }
 
@@ -179,15 +180,22 @@ News.propTypes = {
 }
 
 class Add extends React.Component {
-    state = {
+    state = {              
         name: '',
         text: '',
+        bigText: '',
         agree: false
     }
     onBtnClickHandler = (e) => {
-        e.preventDefault();  
-        const { name, text } = this.state
-        alert(name + '\n' + text)            
+        e.preventDefault();          
+        const { id, name, text, bigText } = this.state        
+        // alert(name + '\n' + text)            
+        this.props.onAddNews({
+            id: +new Date(),
+            author: name,
+            text,
+            bigText
+            })
     }
     handleChange = (e) => {   
         const { id, value } = e.currentTarget     
@@ -205,7 +213,7 @@ class Add extends React.Component {
         }
     }
     render() {
-        const { name, text, agree } = this.state
+        const { name, text, bigText, agree } = this.state
         return(
     <form className='add'> 
         <input 
@@ -223,6 +231,13 @@ class Add extends React.Component {
             onChange={this.handleChange}
             value={text}
         ></textarea>
+        <textarea
+            id='bigText'
+            className='add__text'
+            placeholder='Дополнительный текст'
+            onChange={this.handleChange}
+            value={bigText}
+        ></textarea>
         <label className='add__checkrule'>
             <input type='checkbox'
             onChange={this.handleCheckboxChange}/>
@@ -238,16 +253,27 @@ class Add extends React.Component {
         )
     }
 }
-
-const App = () => {
-// return <p>Всем привет, я компонент App</p>
+Add.propTypes = {
+    onAddNews: PropTypes.func.isRequired,
+}
+class App extends React.Component {
+    state = {
+        news: myNews,
+    }
+    handleAddNews = (data) => {
+        // console.log('я вызвана из add но имею доступ к this.state у App!', this.state);
+        const nextNews = [data, ...this.state.news]
+        this.setState({ news: nextNews})
+    }
+    render() {
     return(
         <React.Fragment>
-        <Add/>
+        <Add onAddNews={this.handleAddNews}/>
         <h3>Новости</h3>        
-            <News data={myNews}/>{/*Добавили свойство data*/}            
+            <News data={this.state.news}/>{/*Добавили свойство data*/}            
         </React.Fragment>
     )
+    }
 
 }
 
