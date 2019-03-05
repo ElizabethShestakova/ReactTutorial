@@ -8,17 +8,30 @@ class News extends React.Component {
         filteredNews: this.props.data
     }
 
-    componentWillReceiveProps(nextProps) {
-        let nextFilteredNews = [...nextProps.data]
+    // componentWillReceiveProps(nextProps) {
+    //     let nextFilteredNews = [...nextProps.data]
         
+    //     nextFilteredNews.forEach((item, index) => {
+    //         if (item.bigText.toLowerCase().indexOf('pubg') !== -1) {
+    //             item.bigText = 'СПАМ'
+    //         }
+    //     })
+
+    //     this.setState({filteredNews: nextFilteredNews})
+    // }
+
+    static getDerivedStateFromProps(props, state) {//если static - нет доступа к this
+        let nextFilteredNews = [...props.data]
+
         nextFilteredNews.forEach((item, index) => {
             if (item.bigText.toLowerCase().indexOf('pubg') !== -1) {
                 item.bigText = 'СПАМ'
             }
         })
-
-        this.setState({filteredNews: nextFilteredNews})
-    }
+        return {
+            filteredNews: nextFilteredNews
+        }
+    } 
 
     renderNews = () => {
         const { filteredNews } = this.state
