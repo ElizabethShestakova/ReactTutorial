@@ -4,9 +4,9 @@ import { Article } from './Article'
 
 class News extends React.Component {
 
-    state = {
-        filteredNews: this.props.data
-    }
+    // state = {
+    //     filteredNews: this.props.data
+    // }
 
     // componentWillReceiveProps(nextProps) {
     //     let nextFilteredNews = [...nextProps.data]
@@ -20,25 +20,25 @@ class News extends React.Component {
     //     this.setState({filteredNews: nextFilteredNews})
     // }
 
-    static getDerivedStateFromProps(props, state) {//если static - нет доступа к this
-        let nextFilteredNews = [...props.data]
+    // static getDerivedStateFromProps(props, state) {//если static - нет доступа к this
+    //     let nextFilteredNews = [...props.data]
 
-        nextFilteredNews.forEach((item, index) => {
-            if (item.bigText.toLowerCase().indexOf('pubg') !== -1) {
-                item.bigText = 'СПАМ'
-            }
-        })
-        return {
-            filteredNews: nextFilteredNews
-        }
-    } 
+    //     nextFilteredNews.forEach((item, index) => {
+    //         if (item.bigText.toLowerCase().indexOf('pubg') !== -1) {
+    //             item.bigText = 'СПАМ'
+    //         }
+    //     })
+    //     return {
+    //         filteredNews: nextFilteredNews
+    //     }
+    // } 
 
     renderNews = () => {
-        const { filteredNews } = this.state
+        const { data } = this.props
         let newsTemplate = null
   
-        if (filteredNews.length) {
-            newsTemplate = filteredNews.map(function(item) {
+        if (data.length) {
+            newsTemplate = data.map(function(item) {
                 return <Article key={item.id} data={item}/>
             })
         } else {
@@ -48,14 +48,14 @@ class News extends React.Component {
     }
   
     render() {
-        const { filteredNews } = this.state       
+        const { data } = this.props       
   
             return (
                 <React.Fragment>
                 <div className='news'>
                     {this.renderNews()}
                     {
-                        filteredNews.length ? <strong className={'news__count'}>Всего новостей: {filteredNews.length}</strong> : null
+                        data.length ? <strong className={'news__count'}>Всего новостей: {data.length}</strong> : null
                     }
                     
                 </div>
